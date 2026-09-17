@@ -1,0 +1,53 @@
+{
+ "files": {
+  "A": {
+   "rows": 4621,
+   "unique": 4621
+  },
+  "B_frozen": {
+   "rows": 5220,
+   "unique": 5220
+  },
+  "C_frozen": {
+   "rows": 2760,
+   "unique": 2760
+  },
+  "B2": {
+   "rows": 1710,
+   "unique": 1710
+  },
+  "C2": {
+   "rows": 2223,
+   "unique": 2223
+  }
+ },
+ "internal_dupes": {
+  "A": 0,
+  "B_frozen": 0,
+  "C_frozen": 0,
+  "B2": 0,
+  "C2": 0
+ },
+ "cross_overlaps": {
+  "A~B_frozen": 0,
+  "A~C_frozen": 0,
+  "A~B2": 0,
+  "A~C2": 0,
+  "B_frozen~C_frozen": 0,
+  "B_frozen~B2": 0,
+  "B_frozen~C2": 0,
+  "C_frozen~B2": 0,
+  "C_frozen~C2": 0,
+  "B2~C2": 0
+ },
+ "malformed": {
+  "A": 0,
+  "B_frozen": 0,
+  "C_frozen": 0,
+  "B2": 0,
+  "C2": 0
+ },
+ "union_unique": 16534,
+ "union_expected": 16534,
+ "row_expectations_met": true
+}
