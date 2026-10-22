@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# safety-review-gate — primary operation: re-verify the frozen backfill ledger
+# integrity (shards present, row counts and md5s match the documented manifest).
+#
+# Usage:
+#   bin/run check     # integrity gate (the only meaningful op for this evidence repo)
+#   bin/run           # same as check
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+exec ./bin/check

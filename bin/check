@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+# safety-review-gate — self-test gate (PASS/FAIL).
+# Evidence-locker integrity gate: the frozen shards must exist and their row
+# counts + md5s must match the on-record manifest (backfill-20260917/README.md).
+# The README deliberately stores "run IDs and progress metadata only — no
+# credentials/secrets/PII", so this gate also sanity-scans shards for secret
+# patterns.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+B=backfill-20260917
+
+echo "== safety-review-gate check: start =="
+[ -d "$B" ] || { echo "FAIL: $B missing"; exit 1; }
+
+expect_rows_b2=1710; expect_md5_b2=e17c3d2025255df2e23aa59341e905f1
+expect_rows_c2=2223; expect_md5_c2=d90ae62cdd2d3b187492dc6bdc7ca80f
+
+for spec in "shard-b2-20260917.txt $expect_rows_b2 $expect_md5_b2" \
+            "shard-c2-20260917.txt $expect_rows_c2 $expect_md5_c2"; do
+  set -- $spec
+  f="$B/$1"; erows="$2"; emd5="$3"
+  if [ ! -f "$f" ]; then echo "FAIL: $f missing"; exit 1; fi
+  rows=$(wc -l < "$f" | tr -d ' ')
+  md5=$(md5sum "$f" | awk '{print $1}')
+  if [ "$rows" != "$erows" ]; then echo "FAIL: $f rows=$rows expected=$erows"; exit 1; fi
+  if [ "$md5" != "$emd5" ]; then echo "FAIL: $f md5=$md5 expected=$emd5"; exit 1; fi
+  echo "OK  $f rows=$rows md5=$md5"
+done
+
+# Essential artifacts present
+for f in "$B/progress-b2c2-20260917-v3.tsv" "$B/validation_report.json" "$B/README.md"; do
+  [ -f "$f" ] || { echo "FAIL: $f missing"; exit 1; }
+done
+echo "OK  progress + validation_report + manifest present"
+
+# Secret-pattern scan over shards (run IDs only expected)
+if grep -aE 'ghp_|sk-|github_pat_|AIza[0-9A-Za-z_-]{20,}' "$B"/*.txt "$B"/*.tsv 2>/dev/null; then
+  echo "FAIL: secret-like token found in shards (should contain only run IDs)"
+  exit 1
+fi
+echo "OK  no secret-like tokens in shards"
+
+echo "== safety-review-gate check: PASS =="
+exit 0
