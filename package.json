@@ -1,0 +1,24 @@
+{
+  "name": "safety-review-gate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The evidence locker for the safety-review gate investigation",
+  "type": "module",
+  "main": "./backfill-20260917/index.ts",
+  "bin": {
+    "safety-review-gate": "./bin/safety-review-gate.ts"
+  },
+  "scripts": {
+    "dev": "bun --hot run ./backfill-20260917/index.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "biome check .",
+    "fmt": "biome format . --write",
+    "build": "bun build ./backfill-20260917/index.ts --outdir ./dist"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "latest",
+    "typescript": "^5.6.3"
+  }
+}
